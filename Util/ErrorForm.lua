@@ -8,10 +8,12 @@ export type ResultForm = {
 errorform.errors = {
 	OK = 0,
 	MALFORMED_NUMBER = 1,
+	UNRECOGNIZED_CHARACTER = 2,
 }
 errorform.messages = {
 	"Success",
-	"Malformed number"
+	"Malformed number",
+	"Unrecognized character",
 }
 
 return errorform

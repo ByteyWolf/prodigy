@@ -3,7 +3,7 @@ local Errors = require "../Util/ErrorForm"
 
 local Keywords = {"local"}
 local ValidVariableAlphabet = "abcdefghijklmnopqrstuvwxyz_"
-local ValidOperators = "+-*/^%.:="
+local ValidOperators = "+-*/^%.:=,#"
 local ValidStandaloneOperators = "(){}[]"
 local ValidNumbers = "0123456789"
 local Tokenizer = {}
@@ -50,7 +50,7 @@ function Tokenizer.parse(source:string): Errors.ResultForm
 		end
 		
 		if string.find(ValidOperators, char, nil, true) then
-			if tokens[#tokens] and tokens[#tokens].tokentype == "operator" then
+			if tokens[#tokens] and tokens[#tokens].tokentype == "operator" and string.sub(tokens[#tokens].content, -1, -1) ~= "=" then
 				tokens[#tokens].content ..= char
 				continue
 			end
@@ -99,6 +99,8 @@ function Tokenizer.parse(source:string): Errors.ResultForm
 			
 			continue
 		end
+		local invalidToken = Tokenizer.createToken(char, "invalid", stream:getPtr())
+		return {Result=Errors.errors.UNRECOGNIZED_CHARACTER, TokenError=invalidToken}
 	end
 	
 	return {Result=Errors.errors.OK}, tokens
