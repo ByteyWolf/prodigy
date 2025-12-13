@@ -1,14 +1,22 @@
 local Stream = require "../Util/Stream"
 local Errors = require "../Util/ErrorForm"
 
-local Keywords = {"local"}
+local Keywords = {"local", "function", "if", "then", "else", "elseif", "while", "for", "in", "do", "end", "return", "not", "and", "or", "break", "continue", "export", "type"}
 local ValidVariableAlphabet = "abcdefghijklmnopqrstuvwxyz_"
 local ValidOperators = "+-*/^%.:=,#"
 local ValidStandaloneOperators = "(){}[]"
 local ValidNumbers = "0123456789"
 local Tokenizer = {}
 
-function Tokenizer.createToken(content:any, tokentype:string, offset:number, line:number, col:number)
+export type Token = {
+	content: string,
+	tokentype: string,
+	offset: number,
+	line: number,
+	col: number,
+}
+
+function Tokenizer.createToken(content:any, tokentype:string, offset:number, line:number, col:number): Token
 	local token = {content=content, tokentype=tokentype, offset=offset, line=line, col=col}
 	return token
 end
@@ -44,6 +52,14 @@ function Tokenizer.parse(source:string): Errors.ResultForm
 			local tokentype = "variable"
 			if table.find(Keywords, variable) then
 				tokentype = "keyword"
+			end
+			if variable == "false" or variable == "true" then
+				tokentype = "boolean"
+				variable = variable == "true"
+			end
+			if variable == "nil" then
+				tokentype = "nil"
+				variable = nil
 			end
 			table.insert(tokens, Tokenizer.createToken(variable, tokentype, stream:getPtr()))
 			continue
