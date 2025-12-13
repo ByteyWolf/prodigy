@@ -1,5 +1,6 @@
 local Tokenizer = require "./Tokenizer"
 local ErrorForm = require "../Util/ErrorForm"
+local RNG = require "../Util/RNG"
 local AST = {}
 AST.typehandlers = {}
 
@@ -11,6 +12,12 @@ function AST.build(tokens:{Tokenizer.Token}): ErrorForm.ResultForm
 	local crtFunction = rootFunction
 	
 	-- Pass 1: solve brackets
+	-- actually no, before that i probably need an equation solver using stacks
+	local function solveEquation()
+		local solutionSteps = {}
+		local resultVariable = RNG.generateRandomVarName()
+		-- TODO
+	end
 		
 end
 
